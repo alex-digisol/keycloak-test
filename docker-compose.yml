@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:13.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+
+  # HOW TO START: https://www.keycloak.org/getting-started/getting-started-docker
+  keycloak:
+    depends_on:
+      - postgres
+    container_name: local_keycloak
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
+    command: start-dev
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - ".env"
+  
+  # TODO: integrate with Krakend
